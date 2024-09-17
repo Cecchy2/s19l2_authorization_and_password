@@ -8,6 +8,7 @@ import dariocecchinato.s19l2_authorization_and_password.services.ViaggiService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +23,7 @@ public class ViaggiController {
     private ViaggiService viaggiService;
 
     @PostMapping
+    @PreAuthorize("hasAuthority('ADMIN')")
     @ResponseStatus (HttpStatus.CREATED)
     public ViaggioResponseDTO saveViaggio(@RequestBody @Validated ViaggioPayloadDTO body, BindingResult validationResult){
         if (validationResult.hasErrors()){
@@ -46,6 +48,7 @@ public class ViaggiController {
     }
 
     @PutMapping("/{viaggioId}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public Viaggio findByIdAndUpdate (@PathVariable UUID viaggioId, @RequestBody ViaggioPayloadDTO body, BindingResult validationResult){
         if (validationResult.hasErrors()){
             String message = validationResult.getAllErrors().stream().map(objectError -> objectError.getDefaultMessage()).collect(Collectors.joining(" ."));
@@ -56,6 +59,7 @@ public class ViaggiController {
     }
 
     @DeleteMapping("/{viaggioId}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void findByIdAndDelete(@PathVariable UUID viaggioId) {
         this.viaggiService.findByIdAndDelete(viaggioId);

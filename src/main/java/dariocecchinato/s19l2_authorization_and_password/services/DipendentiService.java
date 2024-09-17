@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -19,8 +20,8 @@ import java.util.UUID;
 public class DipendentiService {
     @Autowired
     private DipendentiReporitory dipendentiReporitory;
-
-
+    @Autowired
+    private PasswordEncoder bcrypt;
 
 
     public Page<Dipendente> findAll(int page, int size, String sortby){
@@ -32,7 +33,7 @@ public class DipendentiService {
     public Dipendente save (DipendentePayloadDTO body){
         if (dipendentiReporitory.existsByEmail(body.email()))throw new BadRequestException("L' email " + body.email() + " è già in uso");
         String avatar = "https://ui-avatars.com/api/?name="+body.nome()+"+"+body.cognome();
-        Dipendente newDipendente = new Dipendente(body.username(), body.nome(), body.cognome(), body.email(), avatar, body.password());
+        Dipendente newDipendente = new Dipendente(body.username(), body.nome(), body.cognome(), body.email(), avatar, bcrypt.encode(body.password()));
         return dipendentiReporitory.save(newDipendente);
     }
     public Dipendente findDipendenteById(UUID dipendenteId){

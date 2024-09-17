@@ -12,6 +12,7 @@ import dariocecchinato.s19l2_authorization_and_password.services.PrenotazioniSer
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -33,6 +34,7 @@ public class PrenotazioniController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAuthority('ADMIN')")
     public Prenotazione savePrenotazione(@RequestBody @Validated PrenotazionePayloadDTO body, BindingResult validationResult){
         if (validationResult.hasErrors()){
             String message = validationResult.getAllErrors().stream().map(objectError -> objectError.getDefaultMessage()).collect(Collectors.joining(" ."));
@@ -43,6 +45,7 @@ public class PrenotazioniController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAuthority('ADMIN', 'USER')")
     public Page<Prenotazione> getAllPrenotazioni (@RequestParam(defaultValue = "0") int page,
                                                   @RequestParam(defaultValue = "10") int size,
                                                   @RequestParam(defaultValue = "id") String sortBy){
@@ -50,11 +53,13 @@ public class PrenotazioniController {
     }
 
     @GetMapping("/{prenotazioneId}")
+    @PreAuthorize("hasAuthority('ADMIN', 'USER')")
     public Prenotazione getById(@PathVariable UUID prenotazioneId){
         return this.prenotazioniService.findById(prenotazioneId);
     }
 
     @PutMapping("/{prenotazioneId}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public Prenotazione getByIdAndUpdate(@PathVariable UUID prenotazioneId, @RequestBody @Validated PrenotazionePayloadDTO body){
         Viaggio viaggio = viaggiRepository.findById(body.viaggio_id()).orElseThrow(()-> new NotFoundException(body.viaggio_id()));
         Dipendente dipendente = dipendentiReporitory.findById(body.dipendente_id()).orElseThrow(()-> new NotFoundException(body.dipendente_id()));
@@ -69,6 +74,7 @@ public class PrenotazioniController {
 
     }
     @DeleteMapping("/{prenotazioneId}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public void getByIdAndDelete(@PathVariable UUID prenotazioneId){
         this.prenotazioniService.findByIdAndDelete(prenotazioneId);
     }
