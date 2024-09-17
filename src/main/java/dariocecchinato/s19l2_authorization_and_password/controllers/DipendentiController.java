@@ -24,13 +24,11 @@ public class DipendentiController {
     private DipendentiService dipendentiService;
 
             @GetMapping
-            @PreAuthorize("hasAuthority('ADMIN')")
     public Page<Dipendente> findAllDipendenti(@RequestParam(defaultValue = "0")int page, @RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "nome")String sortby){
         return this.dipendentiService.findAll(page, size, sortby);
             }
 
             @GetMapping("/{dipendenteId}")
-            @PreAuthorize("hasAuthority('ADMIN')")
     public Dipendente findById(@PathVariable UUID dipendenteId){
                 Dipendente found = this.dipendentiService.findDipendenteById(dipendenteId);
                 if (found == null )throw new NotFoundException(dipendenteId);
@@ -61,8 +59,6 @@ public class DipendentiController {
     public Dipendente updateProfile(@AuthenticationPrincipal Dipendente currentAuthenticateDipendente, @RequestBody DipendentePayloadDTO body) {
         return this.dipendentiService.findByIdAndUpdate(currentAuthenticateDipendente.getId(), body);
     }
-
-
     }
 
 

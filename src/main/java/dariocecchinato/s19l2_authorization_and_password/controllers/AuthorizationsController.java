@@ -9,6 +9,7 @@ import dariocecchinato.s19l2_authorization_and_password.services.AuthorizationsS
 import dariocecchinato.s19l2_authorization_and_password.services.DipendentiService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -29,6 +30,7 @@ public class AuthorizationsController {
 }
 
     @PostMapping("/register")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @ResponseStatus(HttpStatus.CREATED)
     public DipendenteResponseDTO save(@RequestBody @Validated DipendentePayloadDTO body, BindingResult validationResult) {
         // @Validated serve per 'attivare' le regole di validazione descritte nel DTO
