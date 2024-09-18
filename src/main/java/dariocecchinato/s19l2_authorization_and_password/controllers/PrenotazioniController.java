@@ -45,7 +45,7 @@ public class PrenotazioniController {
     }
 
     @GetMapping
-    @PreAuthorize("hasAuthority('ADMIN', 'USER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public Page<Prenotazione> getAllPrenotazioni (@RequestParam(defaultValue = "0") int page,
                                                   @RequestParam(defaultValue = "10") int size,
                                                   @RequestParam(defaultValue = "id") String sortBy){
@@ -53,7 +53,7 @@ public class PrenotazioniController {
     }
 
     @GetMapping("/{prenotazioneId}")
-    @PreAuthorize("hasAuthority('ADMIN', 'USER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER')")
     public Prenotazione getById(@PathVariable UUID prenotazioneId){
         return this.prenotazioniService.findById(prenotazioneId);
     }

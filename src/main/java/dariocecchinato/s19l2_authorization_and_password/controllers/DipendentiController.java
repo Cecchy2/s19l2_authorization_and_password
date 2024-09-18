@@ -4,6 +4,7 @@ import dariocecchinato.s19l2_authorization_and_password.entities.Dipendente;
 import dariocecchinato.s19l2_authorization_and_password.exceptions.BadRequestException;
 import dariocecchinato.s19l2_authorization_and_password.exceptions.NotFoundException;
 import dariocecchinato.s19l2_authorization_and_password.payloads.DipendentePayloadDTO;
+import dariocecchinato.s19l2_authorization_and_password.payloads.DipendenteResponseDTO;
 import dariocecchinato.s19l2_authorization_and_password.services.DipendentiService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -27,6 +28,24 @@ public class DipendentiController {
     public Page<Dipendente> findAllDipendenti(@RequestParam(defaultValue = "0")int page, @RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "nome")String sortby){
         return this.dipendentiService.findAll(page, size, sortby);
             }
+
+    @PostMapping("/register")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @ResponseStatus(HttpStatus.CREATED)
+    public DipendenteResponseDTO save(@RequestBody @Validated DipendentePayloadDTO body, BindingResult validationResult) {
+
+        if (validationResult.hasErrors()) {
+            String messages = validationResult.getAllErrors().stream()
+                    .map(objectError -> objectError.getDefaultMessage())
+                    .collect(Collectors.joining(". "));
+
+            throw new BadRequestException("Ci sono stati errori nel payload. " + messages);
+        } else {
+
+            return new DipendenteResponseDTO(this.dipendentiService.save(body).getId());
+        }
+
+    }
 
             @GetMapping("/{dipendenteId}")
     public Dipendente findById(@PathVariable UUID dipendenteId){

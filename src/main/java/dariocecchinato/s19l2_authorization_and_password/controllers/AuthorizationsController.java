@@ -29,25 +29,5 @@ public class AuthorizationsController {
     return new DipendenteLoginResponseDTO(this.authorizationsService.checkCredenzialiEGeneraToken(body));
 }
 
-    @PostMapping("/register")
-    @PreAuthorize("hasAuthority('ADMIN')")
-    @ResponseStatus(HttpStatus.CREATED)
-    public DipendenteResponseDTO save(@RequestBody @Validated DipendentePayloadDTO body, BindingResult validationResult) {
-        // @Validated serve per 'attivare' le regole di validazione descritte nel DTO
-        // BindingResult mi permette di capire se ci sono stati errori e quali errori ci sono stati
 
-        if (validationResult.hasErrors()) {
-            // Se ci sono stati errori lanciamo un'eccezione custom
-            String messages = validationResult.getAllErrors().stream()
-                    .map(objectError -> objectError.getDefaultMessage())
-                    .collect(Collectors.joining(". "));
-
-            throw new BadRequestException("Ci sono stati errori nel payload. " + messages);
-        } else {
-            // Se non ci sono stati salviamo l'utente
-
-            return new DipendenteResponseDTO(this.dipendentiService.save(body).getId());
-        }
-
-    }
 }

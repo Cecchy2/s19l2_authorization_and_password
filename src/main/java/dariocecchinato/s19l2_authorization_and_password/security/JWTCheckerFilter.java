@@ -40,7 +40,6 @@ public class JWTCheckerFilter extends OncePerRequestFilter {
         jwtTools.verifyToken(accessToken);
 
         String id = jwtTools.extractIdFromToken(accessToken);
-
         Dipendente currentDipendente = this.dipendentiService.findDipendenteById(UUID.fromString(id));
 
         Authentication authentication = new UsernamePasswordAuthenticationToken(currentDipendente,null,currentDipendente.getAuthorities());
@@ -52,7 +51,6 @@ public class JWTCheckerFilter extends OncePerRequestFilter {
     }
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-
         return new AntPathMatcher().match("/authorizations/**", request.getServletPath());
     }
 }

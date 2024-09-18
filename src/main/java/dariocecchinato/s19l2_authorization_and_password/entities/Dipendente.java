@@ -47,5 +47,5 @@ public class Dipendente implements UserDetails {
         return List.of(new SimpleGrantedAuthority(this.role.name()));
     }
     @Override
-    public String getUsername() {return this.email;}
+    public String getUsername() {return this.username;}
 }
